@@ -1,8 +1,8 @@
 package com.dt2.GTAVI.controller;
 
-import com.dt2.GTAVI.entities.Arma;
 import com.dt2.GTAVI.entities.Veicolos;
 import com.dt2.GTAVI.repository.VeicolosRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +19,12 @@ public class VeicolosController {
     }
 
     @PostMapping
-    public String criarVeicolos(@RequestBody Veicolos bugate) {
+    public ResponseEntity<Veicolos> criarVeicolos(@RequestBody Veicolos bugate) {
         try {
-            return "Salvo com Sucesso: " + repository.save(bugate);
+            Veicolos veiculoSalvo = repository.save(bugate);
+            return ResponseEntity.ok(veiculoSalvo);
         } catch (Exception e) {
-            return "Dados incorretos";
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -41,16 +42,16 @@ public class VeicolosController {
     public void deletar(@PathVariable int id) {
         repository.deleteById(id);
     }
+
     @PutMapping("/{id}")
-    public void atualizar(@PathVariable  int id, @RequestBody Veicolos v){
-
-        com.dt2.GTAVI.entities.Veicolos veicolos = repository.getReferenceById(id);
-        veicolos.setNome(v.getNome());
-        veicolos.setCategoria(v.getCategoria());
-        veicolos.setMarca(veicolos.getMarca());
-        veicolos.setDescricao(v.getDescricao());
-        veicolos.setImagem(v.getImagem());
-        repository.save(veicolos);
-
+    public ResponseEntity<Veicolos> atualizar(@PathVariable int id, @RequestBody Veicolos v) {
+        return repository.findById(id).map(veicolos -> {
+            veicolos.setNome(v.getNome());
+            veicolos.setCategoria(v.getCategoria());
+            veicolos.setMarca(v.getMarca());
+            veicolos.setDescricao(v.getDescricao());
+            veicolos.setImagem(v.getImagem());
+            return ResponseEntity.ok(repository.save(veicolos));
+        }).orElse(ResponseEntity.notFound().build());
     }
 }

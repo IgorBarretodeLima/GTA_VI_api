@@ -1,20 +1,26 @@
 package com.dt2.GTAVI.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Arma {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String nome;
     private String categoria;
     private String fabricante;
-    private String imagem;
+
+    @Column(columnDefinition = "TEXT")
     private String descricao;
+
+    @Column(columnDefinition = "TEXT")
+    private String imagem;
+
+    // Getters e Setters...
+
 
     public Arma(String nome, String categoria, String fabricante, String imagem, String descricao) {
         this.nome = nome;
